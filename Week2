@@ -1,0 +1,39 @@
+% Compute the Feigenbaum delta
+% Store approximate values in the row vector delta for assessment, where length(delta)= num_doublings and 
+% delta(2:num_doublings) are computed from the algorithm described in Lectures 21-23.
+num_doublings=11; delta=zeros(1,num_doublings); delta(1)=5;
+% Write your code here
+%Variables initializing
+m=zeros(1,num_doublings);
+m_root=zeros(1,num_doublings);
+m_root(1)=2;
+m_root(2)=1+sqrt(5);
+m(1)=2;
+m(2)=1+sqrt(5);
+
+for n=2:num_doublings %Loop 1 computing m(n)
+    %use formula to compute
+    m(n+1) = m(n)+(m(n) - m(n-1))/delta(n-1);
+    for nit=1:40 %Loop 2 Newton's method
+        N=2^(n);
+        X=0.5;
+        X_0 = 0;
+        for i = 1:N %Loop 3 computing x and detx
+            X_temp = m(n+1)*X*(1-X);
+            X_0_temp = X*(1-X)+(m(n+1)*X_0*(1-2*X));
+            X=X_temp;
+            X_0=X_0_temp;
+        end
+        %step of Newton's method
+        m(n+1)=m(n+1)-(X-0.5)/X_0;
+    end 
+    %saving m and computing delta
+     m_root(n+1)=m(n+1);
+     delta(n)=(m_root(n) - m_root(n-1))/(m_root(n+1)-m_root(n));
+end
+
+% Output your results
+fprintf('n        delta(n)\n');
+for n=1:num_doublings
+    fprintf('%2g %18.15f\n',n,delta(n));
+end
